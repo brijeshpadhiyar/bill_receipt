@@ -8,6 +8,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -19,35 +20,46 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Image.asset(
-                'assets/receipt.png',
-                width: 150.w,
-                height: 200.h,
-              ),
-              TextFormField(
-                controller: textController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter Customer Name',
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/receipt.png',
+                  width: 150.w,
+                  height: 200.h,
                 ),
-              ),
-              SizedBox(height: 50.h),
-              OutlinedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BillScreen(customerName: textController.text),
-                      ));
-                },
-                style: ElevatedButton.styleFrom(
-                  maximumSize: Size(200.w, 50.h),
-                  minimumSize: Size(200.w, 50.h),
+                TextFormField(
+                  controller: textController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter Customer Name please,';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Enter Customer Name',
+                  ),
                 ),
-                child: const Text('Continue'),
-              ),
-            ],
+                SizedBox(height: 50.h),
+                OutlinedButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BillScreen(customerName: textController.text),
+                          ));
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    maximumSize: Size(200.w, 50.h),
+                    minimumSize: Size(200.w, 50.h),
+                  ),
+                  child: const Text('Continue'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
